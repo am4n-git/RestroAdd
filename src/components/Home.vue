@@ -16,7 +16,7 @@
             <td>{{item.address}}</td>
             <td>{{item.contact}}</td>
             <td><router-link :to="'/update/'+item.id">Update</router-link></td>
-
+            <td><button v-on:click="deleteRestro(item.id)">Delete</button></td>
 
         </tr>
     </table>
@@ -38,7 +38,15 @@ export default {
     },
     async mounted()
     {
-            let user = localStorage.getItem('user-info');
+        this.loadData();
+    },
+    methods:{
+        async deleteRestro(id){
+            let result = await axios.delete('http://localhost:3000/restaurant/'+id)
+            result.status==200?this.loadData():"";
+        },
+        async loadData(){
+                        let user = localStorage.getItem('user-info');
             this.name = JSON.parse(user).name
             if(!user){
                 this.$router.push({name:'Signup'})
@@ -46,6 +54,7 @@ export default {
             let result = await axios.get('http://localhost:3000/restaurant')
             console.log(result)
             this.restaurant= result.data
+        }
     }
 }
 </script>
